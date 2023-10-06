@@ -1,0 +1,44 @@
+version: '3'
+
+services:
+  drupal:
+    build:
+      context: .
+      dockerfile: Dockerfile-drupal
+    ports:
+      - "9000:80"
+    depends_on:
+      - mysql
+    networks:
+      - my_network
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_DATABASE: drupal
+      MYSQL_USER: root
+      MYSQL_PASSWORD: password
+
+  mysql:
+    build:
+      context: .
+      dockerfile: Dockerfile-mysql
+    networks:
+      - my_network
+    ports:
+      - "3306:3306"
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    environment:
+      PMA_HOST: mysql
+      PMA_USER: root
+      PMA_PASSWORD: password
+    ports:
+      - "9091:80"
+    networks:
+      - my_network
+    depends_on:
+      - mysql
+
+
+networks:
+  my_network:
