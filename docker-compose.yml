@@ -1,6 +1,15 @@
 version: '3'
 
 services:
+  mysql:
+    build:
+      context: .
+      dockerfile: Dockerfile-mysql
+    networks:
+      - my_network
+    ports:
+      - "3306:3306"
+
   drupal:
     build:
       context: .
@@ -17,21 +26,13 @@ services:
       MYSQL_USER: root
       MYSQL_PASSWORD: password
 
-  mysql:
-    build:
-      context: .
-      dockerfile: Dockerfile-mysql
-    networks:
-      - my_network
-    ports:
-      - "3306:3306"
-
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:latest
     environment:
       PMA_HOST: mysql
       PMA_USER: root
       PMA_PASSWORD: password
+      UPLOAD_LIMIT: 1000M
     ports:
       - "9091:80"
     networks:
